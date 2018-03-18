@@ -21,19 +21,20 @@ cp /etc/pam.d/common-session ~/common-session
 sudo echo "session required pam_limits.so" >> /etc/pam.d/common-session
 
 #========== Update streamcmd =============
-steamcmd +quit
+/usr/games/steamcmd +quit
 
 #========== Create folder ==============
 sudo mkdir -p /ark
-sudo chown -R xelous /ark --verbose
+sudo chmod -R 777 /ark --verbose
+sudo chgrp -R $USER /ark --verbose
+sudo chown -R $USER /ark --verbose
 
 #========== Add Ark User ===============
 sudo useradd -m ark
 
 #========= Link Steamcmd and download the game =========
 cd ~
-ln -s /usr/games/steamcmd steamcmd
-steamcmd +login anonymous +force_install_dir /ark +app_update 376030 +quit
+/usr/games/steamcmd +login anonymous +force_install_dir /ark +app_update 376030 +quit
 nano /ark/ShooterGame/Saved/Config/DefaultGameUserSettings.ini
 
 #======
@@ -52,7 +53,7 @@ echo "StartLimitBurst=3" >> ark.service
 echo "User=ark" >> ark.service
 echo "Group=ark" >> ark.service
 echo "ExecStartPre=/usr/games/steamcmd +login anonymous +force_install_dir /ark +app_update 376030 +quit" >> ark.service
-echo "ExecStart=/ark/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=XelServer -server -log" >> ark.service
+echo "ExecStart=/ark/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=XelServer?MaxPlayers=4 -server -log" >> ark.service
 echo "ExecStop=killall -TERM srcds_linux" >> ark.service
 echo "[Install]" >> ark.service
 echo "WantedBy=multi-user.target" >> ark.service
